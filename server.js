@@ -6,68 +6,34 @@ var { buildSchema } = require('graphql')
 // GraphQL schema
 var schema = buildSchema(`
     type Query {
-        todo(id: Int!): Todo
-        todos(status: String): [Todo]
+        product(id: Int!): Product
+        products: [Product]
     },
-    type Mutation {
-        updateTodo(id: Int!): Todo
-    },
-    type Todo {
+    type Product {
         id: Int
-        text: String
-        completed: Boolean
+        title: String
+        price: Float
+        inventory: Int
     }
 `)
 
-var todoData = [
-    {
-        id: 1,
-        text: 'The Complete Node.js Developer Course',
-        completed: true
-    },
-    {
-        id: 2,
-        text: 'Node.js, Express & MongoDB Dev to Deployment',
-        completed: false
-    },
-    {
-        id: 3,
-        text: 'JavaScript: Understanding The Weird Parts',
-        completed: false
-    }
+var productData = [
+    {"id": 1, "title": "iPad 4 Mini", "price": 500.01, "inventory": 2},
+    {"id": 2, "title": "H&M T-Shirt White", "price": 10.99, "inventory": 10},
+    {"id": 3, "title": "Charli XCX - Sucker CD", "price": 19.99, "inventory": 5},
+    {"id": 4, "title": "Iphone XS", "price": 29.99, "inventory": 8}
 ]
 
-var getTodo = function(args) { 
+var getProduct = function(args) { 
     var id = args.id
-    return todoData.filter(todo => {
-        return todo.id == id
+    return productData.filter(product => {
+        return product.id == id
     })[0]
 }
 
-var getTodos = function(args) {
-    if (args.status === 'complete') {
-        return todoData.filter(todo => todo.completed === true)
-    } else if (args.status === 'active') {
-        return todoData.filter(todo => todo.completed === false)
-    } else {
-        return todoData
-    }
-}
-
-var updateTodo = function({id}) {
-    todoData.map(todo => {
-        if (todo.id === id) {
-            todo.completed = !todo.completed
-            return todo
-        }
-    })
-    return todoData.filter(todo => todo.id === id) [0]
-}
-
 var root = {
-    todo: getTodo,
-    todos: getTodos,
-    updateTodo: updateTodo
+    product: getProduct,
+    products: productData
 }
 
 var app = express()
